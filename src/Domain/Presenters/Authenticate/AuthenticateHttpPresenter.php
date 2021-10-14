@@ -18,9 +18,17 @@ class AuthenticateHttpPresenter implements AuthenticateOutputPort {
      * @inheritDoc
      */
     public function userAuthenticated(AuthenticateResponseModel $authenticateResponseModel): ViewModel {
+        $user = $authenticateResponseModel->getUser();
         return new HttpResponseViewModel(
             response_success(
-                $authenticateResponseModel->getUser(),
+                [
+                    'user'          =>  $user,
+                    'token'         =>  [
+                        'type'      =>  'Bearer',
+                        'expires'   =>  now()->diffInSeconds(now()->addMinutes(config('sanctum.expiration'))->subMinutes(50)),
+                        'token'     =>  $user->createToken('auth_token')->plainTextToken
+                    ]
+                ],
                 'Successfully authenticated user',
                 Response::HTTP_OK
             )
