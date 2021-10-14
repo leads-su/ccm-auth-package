@@ -83,15 +83,10 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "git",
-            "url": "git@gitlab.leads.local:ccm/ccm-domain-package.git"
-        },
-        {
-            "type": "git",
-            "url": "git@gitlab.leads.local:ccm/ccm-users-package.git"
+    "repositories": {
+        "gitlab.leads.local/123": {
+            "type": "composer",
+            "url": "http://gitlab.leads.local/api/v4/group/123/-/packages/composer/packages.json"
         }
-    ]
-
+    }
 }

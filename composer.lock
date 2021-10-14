@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "56db195464b8b8b64c96881e4a27947e",
+    "content-hash": "f97584b700bb5a896932b0c924651e5b",
     "packages": [
         {
             "name": "brick/math",
@@ -69,10 +69,11 @@
         {
             "name": "ccm/domain",
             "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "git@gitlab.leads.local:ccm/ccm-domain-package.git",
-                "reference": "1db78ea33864f0c2e1728ced953fe888c391b8a4"
+            "dist": {
+                "type": "zip",
+                "url": "http://gitlab.leads.local/api/v4/projects/257/packages/composer/archives/ccm/domain.zip?sha=1db78ea33864f0c2e1728ced953fe888c391b8a4",
+                "reference": "1db78ea33864f0c2e1728ced953fe888c391b8a4",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -86,12 +87,12 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "ConsulConfigManager\\Domain\\": "src/"
-                },
                 "files": [
                     "src/helpers.php"
-                ]
+                ],
+                "psr-4": {
+                    "ConsulConfigManager\\Domain\\": "src/"
+                }
             },
             "autoload-dev": {
                 "psr-4": {
@@ -109,8 +110,8 @@
             "authors": [
                 {
                     "name": "Zhivolupov Ivan",
-                    "email": "iz@leads.su",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "iz@leads.su"
                 }
             ],
             "description": "Domain package for CCM backend",
@@ -120,16 +121,16 @@
                 "consul",
                 "domain",
                 "leads"
-            ],
-            "time": "2021-09-26T09:05:28+00:00"
+            ]
         },
         {
             "name": "ccm/users",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "git@gitlab.leads.local:ccm/ccm-users-package.git",
-                "reference": "3bc0518b7ec15de4a23bf3bdba6ad195a4e300e3"
+            "version": "1.0.8",
+            "dist": {
+                "type": "zip",
+                "url": "http://gitlab.leads.local/api/v4/projects/258/packages/composer/archives/ccm/users.zip?sha=1ae33466c23ba6791a5ee7e7de23addb7d19ed67",
+                "reference": "1ae33466c23ba6791a5ee7e7de23addb7d19ed67",
+                "shasum": ""
             },
             "require": {
                 "ccm/domain": "^1.0",
@@ -139,7 +140,8 @@
                 "ext-ldap": "*",
                 "illuminate/database": "^8.0",
                 "laravel/sanctum": "^2.11",
-                "php": "^8.0"
+                "php": "^8.0",
+                "spatie/laravel-permission": "^5.1"
             },
             "require-dev": {
                 "mockery/mockery": "^1.4",
@@ -150,19 +152,20 @@
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "ConsulConfigManager\\Users\\Providers\\UsersServiceProvider"
-                    ],
                     "aliases": {
                         "UserDomain": "ConsulConfigManager\\Users\\UserDomain"
-                    }
+                    },
+                    "providers": [
+                        "ConsulConfigManager\\Users\\Providers\\UsersServiceProvider"
+                    ]
                 }
             },
             "autoload": {
+                "files": [],
                 "psr-4": {
-                    "ConsulConfigManager\\Users\\": "src/"
-                },
-                "files": []
+                    "ConsulConfigManager\\Users\\": "src/",
+                    "ConsulConfigManager\\Users\\Database\\Seeders\\": "database/seeders/"
+                }
             },
             "autoload-dev": {
                 "psr-4": {
@@ -177,13 +180,17 @@
                     "@putenv XDEBUG_MODE=coverage",
                     "phpunit --color=always --coverage-clover=\"output/code-coverage/clover.xml\""
                 ],
+                "test:coverage-html": [
+                    "@putenv XDEBUG_MODE=coverage",
+                    "phpunit --color=always --coverage-html=\"output/code-coverage\""
+                ],
                 "test:coverage-text": [
                     "@putenv XDEBUG_MODE=coverage",
                     "phpunit --color=always --coverage-text"
                 ],
-                "test:coverage-html": [
+                "test:coverage-gitlab": [
                     "@putenv XDEBUG_MODE=coverage",
-                    "phpunit --color=always --coverage-html=\"output/code-coverage\""
+                    "phpunit --color=never --coverage-text"
                 ]
             },
             "license": [
@@ -192,8 +199,8 @@
             "authors": [
                 {
                     "name": "Zhivolupov Ivan",
-                    "email": "iz@leads.su",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "iz@leads.su"
                 }
             ],
             "description": "Users package for CCM backend",
@@ -204,8 +211,7 @@
                 "extension",
                 "leads",
                 "users"
-            ],
-            "time": "2021-08-20T13:36:34+00:00"
+            ]
         },
         {
             "name": "composer/package-versions-deprecated",
@@ -2688,6 +2694,88 @@
                 }
             ],
             "time": "2021-09-25T23:10:38+00:00"
+        },
+        {
+            "name": "spatie/laravel-permission",
+            "version": "5.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/laravel-permission.git",
+                "reference": "58d5eb6c7b0eafa8bdf0a93d1ca5c214a05344cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/58d5eb6c7b0eafa8bdf0a93d1ca5c214a05344cb",
+                "reference": "58d5eb6c7b0eafa8bdf0a93d1ca5c214a05344cb",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/auth": "^6.0|^7.0|^8.0",
+                "illuminate/container": "^6.0|^7.0|^8.0",
+                "illuminate/contracts": "^6.0|^7.0|^8.0",
+                "illuminate/database": "^6.0|^7.0|^8.0",
+                "php": "^7.2.5|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^4.0|^5.0|^6.0",
+                "phpunit/phpunit": "^8.0|^9.0",
+                "predis/predis": "^1.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Spatie\\Permission\\PermissionServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "5.x-dev",
+                    "dev-master": "5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Permission\\": "src"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Permission handling for Laravel 6.0 and up",
+            "homepage": "https://github.com/spatie/laravel-permission",
+            "keywords": [
+                "acl",
+                "laravel",
+                "permission",
+                "permissions",
+                "rbac",
+                "roles",
+                "security",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/laravel-permission/issues",
+                "source": "https://github.com/spatie/laravel-permission/tree/5.1.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-09-01T20:02:17+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

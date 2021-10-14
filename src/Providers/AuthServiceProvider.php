@@ -4,7 +4,11 @@ use Illuminate\Support\Facades\Route;
 use ConsulConfigManager\Auth\AuthDomain;
 use Laravel\Sanctum\SanctumServiceProvider;
 use ConsulConfigManager\Domain\DomainServiceProvider;
+use ConsulConfigManager\Auth\Http\Controllers\UserController;
+use ConsulConfigManager\Auth\Domain\UseCases\User\UserInputPort;
+use ConsulConfigManager\Auth\Domain\UseCases\User\UserInteractor;
 use ConsulConfigManager\Auth\Http\Controllers\AuthenticateController;
+use ConsulConfigManager\Auth\Domain\Presenters\User\UserHttpPresenter;
 use ConsulConfigManager\Auth\Domain\UseCases\Authenticate\AuthenticateInputPort;
 use ConsulConfigManager\Auth\Domain\UseCases\Authenticate\AuthenticateInteractor;
 use ConsulConfigManager\Auth\Domain\Presenters\Authenticate\AuthenticateHttpPresenter;
@@ -77,6 +81,13 @@ class AuthServiceProvider extends DomainServiceProvider {
             AuthenticateInteractor::class,
             AuthenticateController::class,
             AuthenticateHttpPresenter::class,
+        );
+
+        $this->registerInterceptorFromParameters(
+            UserInputPort::class,
+            UserInteractor::class,
+            UserController::class,
+            UserHttpPresenter::class,
         );
     }
 
