@@ -1,33 +1,34 @@
 <?php namespace ConsulConfigManager\Auth\Http\Controllers;
 
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
 use ConsulConfigManager\Auth\Exceptions\ExceptionHandler;
 use ConsulConfigManager\Domain\ViewModels\HttpResponseViewModel;
-use ConsulConfigManager\Auth\Domain\UseCases\User\UserInputPort;
-use ConsulConfigManager\Auth\Domain\UseCases\User\UserRequestModel;
+use ConsulConfigManager\Auth\Domain\UseCases\Logout\LogoutInputPort;
+use ConsulConfigManager\Auth\Domain\UseCases\Logout\LogoutRequestModel;
 use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
 
 /**
- * Class UserController
+ * Class LogoutController
  * @package ConsulConfigManager\Auth\Http\Controllers
  */
-class UserController extends Controller {
+class LogoutController extends Controller {
 
     /**
-     * User input port interactor instance
-     * @var UserInputPort
+     * Logout input port instance
+     * @var LogoutInputPort
      */
-    private UserInputPort $interactor;
+    private LogoutInputPort $interactor;
 
     /**
-     * UserController Constructor.
-     *
-     * @param UserInputPort $interactor
+     * LogoutController constructor.
+     * @param LogoutInputPort $interactor
+     * @return void
      */
-    public function __construct(UserInputPort $interactor) {
+    public function __construct(LogoutInputPort $interactor) {
         $this->interactor = $interactor;
         App::singleton(
             ExceptionHandlerContract::class,
@@ -42,10 +43,11 @@ class UserController extends Controller {
      * @param Request $request
      *
      * @return Response|null
+     * @throws Throwable
      */
     public function __invoke(Request $request): ?Response {
-        $viewModel = $this->interactor->user(
-            new UserRequestModel($request)
+        $viewModel = $this->interactor->logout(
+            new LogoutRequestModel($request)
         );
 
         if ($viewModel instanceof HttpResponseViewModel) {

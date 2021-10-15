@@ -33,7 +33,6 @@ class AuthenticateHttpPresenter implements AuthenticateOutputPort {
                 Response::HTTP_OK
             )
         );
-
     }
 
     /**

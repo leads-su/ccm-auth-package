@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 use ConsulConfigManager\Auth\Test\TestCase;
 use ConsulConfigManager\Auth\Test\ProvidesUsersRepository;
 use ConsulConfigManager\Users\Domain\Interfaces\UserEntity;
@@ -25,6 +26,11 @@ class AuthenticationTest extends TestCase {
             'password'              =>  Arr::get($data, 'password')
         ]);
         $response->assertStatus(200);
+        $decoded = $response->json();
+        $this->assertArrayHasKey('data', $decoded);
+        $this->assertArrayHasKey('user', $decoded['data']);
+        $this->assertArrayHasKey('token', $decoded['data']);
+        $this->assertArrayHasKey('token', $decoded['data']['token']);
     }
 
     /**

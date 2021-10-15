@@ -31,7 +31,7 @@ class UserHttpPresenter implements UserOutputPort {
         return new HttpResponseViewModel(response_error(
             [],
             'Not authenticated to access this route',
-            Response::HTTP_FORBIDDEN
+            Response::HTTP_UNAUTHORIZED
         ));
     }
 }

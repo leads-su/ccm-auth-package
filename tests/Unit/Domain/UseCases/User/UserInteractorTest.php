@@ -32,7 +32,7 @@ class UserInteractorTest extends TestCase {
         $interactor = $this->createInteractor();
         $requestModel = new UserRequestModel(new Request());
         $response = $interactor->user($requestModel);
-        $this->assertEquals(403, $response->getResponse()->status());
+        $this->assertEquals(401, $response->getResponse()->status());
     }
 
     /**

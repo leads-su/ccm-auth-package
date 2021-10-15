@@ -27,7 +27,7 @@ class UserTest extends TestCase {
 
     public function testShouldPassIfNotAuthenticatedUserCannotRetrievePersonalInformation(): void {
         $response = $this->get('/auth/user');
-        $this->assertEquals(403, $response->status());
+        $this->assertEquals(401, $response->status());
     }
 
 }
