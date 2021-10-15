@@ -125,11 +125,11 @@
         },
         {
             "name": "ccm/users",
-            "version": "1.0.8",
+            "version": "1.0.9",
             "dist": {
                 "type": "zip",
-                "url": "http://gitlab.leads.local/api/v4/projects/258/packages/composer/archives/ccm/users.zip?sha=1ae33466c23ba6791a5ee7e7de23addb7d19ed67",
-                "reference": "1ae33466c23ba6791a5ee7e7de23addb7d19ed67",
+                "url": "http://gitlab.leads.local/api/v4/projects/258/packages/composer/archives/ccm/users.zip?sha=adaf259ddffa1372864f549381f46ad39f88d4ee",
+                "reference": "adaf259ddffa1372864f549381f46ad39f88d4ee",
                 "shasum": ""
             },
             "require": {
