@@ -1,92 +1,94 @@
 {
-    "name": "ccm/auth",
-    "description": "Auth package for CCM backend",
-    "version": "1.0.0",
-    "license": "proprietary",
-    "keywords": [
-        "ccm",
-        "leads",
-        "consul",
-        "users",
-        "extension"
-    ],
-    "homepage": "https://gitlab.leads.local/ccm/ccm-auth-package",
-    "authors": [
-        {
-            "name": "Zhivolupov Ivan",
-            "email": "iz@leads.su",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": "^8.0",
-        "ext-json": "*",
-        "ext-ldap": "*",
-        "ccm/domain": "^1.0",
-        "ccm/users": "^1.0",
-        "directorytree/ldaprecord-laravel": "^2.4",
-        "doctrine/dbal": "^3.1",
-        "illuminate/database": "^8.0",
-        "laravel/sanctum": "^2.11"
-    },
-    "require-dev": {
-        "mockery/mockery": "^1.4",
-        "orchestra/testbench": "^6.0",
-        "phpunit/phpunit": "^9.0",
-        "sempro/phpunit-pretty-print": "^1.4"
-    },
-    "autoload": {
-        "psr-4": {
-            "ConsulConfigManager\\Auth\\": "src/"
-        },
-        "files": []
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ConsulConfigManager\\Auth\\Test\\": "tests/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "ConsulConfigManager\\Auth\\Providers\\AuthServiceProvider"
-            ]
-        }
-    },
-    "scripts": {
-        "test": [
-            "phpunit --color=always"
-        ],
-        "test:coverage": [
-            "@putenv XDEBUG_MODE=coverage",
-            "phpunit --color=always --coverage-clover=\"output/code-coverage/clover.xml\""
-        ],
-        "test:coverage-text": [
-            "@putenv XDEBUG_MODE=coverage",
-            "phpunit --color=always --coverage-text"
-        ],
-        "test:coverage-gitlab": [
-            "@putenv XDEBUG_MODE=coverage",
-            "phpunit --color=never --coverage-text"
-        ],
-        "test:coverage-html": [
-            "@putenv XDEBUG_MODE=coverage",
-            "phpunit --color=always --coverage-html=\"output/code-coverage\""
-        ]
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
-        "sort-packages": true,
-        "secure-http": false,
-        "gitlab-domains": ["gitlab.leads.local"]
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "repositories": {
-        "gitlab.leads.local/123": {
-            "type": "composer",
-            "url": "http://gitlab.leads.local/api/v4/group/123/-/packages/composer/packages.json"
-        }
+  "name": "ccm/auth",
+  "description": "Auth package for CCM backend",
+  "version": "1.0.1",
+  "license": "proprietary",
+  "keywords": [
+    "ccm",
+    "leads",
+    "consul",
+    "users",
+    "extension"
+  ],
+  "homepage": "https://gitlab.leads.local/ccm/ccm-auth-package",
+  "authors": [
+    {
+      "name": "Zhivolupov Ivan",
+      "email": "iz@leads.su",
+      "role": "Developer"
     }
+  ],
+  "require": {
+    "php": "^8.0",
+    "ext-json": "*",
+    "ext-ldap": "*",
+    "ccm/domain": "^1.0",
+    "ccm/users": "^1.0",
+    "directorytree/ldaprecord-laravel": "^2.4",
+    "doctrine/dbal": "^3.1",
+    "illuminate/database": "^8.0",
+    "laravel/sanctum": "^2.11"
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.4",
+    "orchestra/testbench": "^6.0",
+    "phpunit/phpunit": "^9.0",
+    "sempro/phpunit-pretty-print": "^1.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "ConsulConfigManager\\Auth\\": "src/"
+    },
+    "files": []
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ConsulConfigManager\\Auth\\Test\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ConsulConfigManager\\Auth\\Providers\\AuthServiceProvider"
+      ]
+    }
+  },
+  "scripts": {
+    "test": [
+      "phpunit --color=always"
+    ],
+    "test:coverage": [
+      "@putenv XDEBUG_MODE=coverage",
+      "phpunit --color=always --coverage-clover=\"output/code-coverage/clover.xml\""
+    ],
+    "test:coverage-text": [
+      "@putenv XDEBUG_MODE=coverage",
+      "phpunit --color=always --coverage-text"
+    ],
+    "test:coverage-gitlab": [
+      "@putenv XDEBUG_MODE=coverage",
+      "phpunit --color=never --coverage-text"
+    ],
+    "test:coverage-html": [
+      "@putenv XDEBUG_MODE=coverage",
+      "phpunit --color=always --coverage-html=\"output/code-coverage\""
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "secure-http": false,
+    "gitlab-domains": [
+      "gitlab.leads.local"
+    ]
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "repositories": {
+    "gitlab.leads.local/123": {
+      "type": "composer",
+      "url": "http://gitlab.leads.local/api/v4/group/123/-/packages/composer/packages.json"
+    }
+  }
 }
