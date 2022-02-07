@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f97584b700bb5a896932b0c924651e5b",
+    "content-hash": "664e0359e8058e844502b1019320f5d8",
     "packages": [
         {
             "name": "brick/math",
@@ -130,16 +130,16 @@
         },
         {
             "name": "ccm/users",
-            "version": "1.0.12",
+            "version": "1.0.15",
             "source": {
                 "type": "git",
                 "url": "http://gitlab.leads.local/ccm/ccm-users-package.git",
-                "reference": "9a76d48dec56870169502613ab7f1c9655fbcda4"
+                "reference": "5f0c990fc80b8ec6be12784f0474d9deb956480c"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://gitlab.leads.local/api/v4/projects/258/packages/composer/archives/ccm/users.zip?sha=9a76d48dec56870169502613ab7f1c9655fbcda4",
-                "reference": "9a76d48dec56870169502613ab7f1c9655fbcda4",
+                "url": "http://gitlab.leads.local/api/v4/projects/258/packages/composer/archives/ccm/users.zip?sha=5f0c990fc80b8ec6be12784f0474d9deb956480c",
+                "reference": "5f0c990fc80b8ec6be12784f0474d9deb956480c",
                 "shasum": ""
             },
             "require": {

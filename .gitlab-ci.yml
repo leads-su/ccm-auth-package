@@ -16,24 +16,69 @@ cache:
     - vendor/
 
 stages:
-  - qa
+  - phpunit
+  - sonarqube
   - test
   - publish
 
-qa:
-  image: docker.leads.su:443/ccm/application-image:latest_debug
+phpunit:
+  image: docker.leads.su:443/ccm/application-image:8.0_debug
   extends: .before_script_template
-  stage: qa
+  stage: phpunit
   tags:
     - shared-docker-runner
   only:
     - main
+    - merge_requests
   script:
     - composer install
     - composer test:coverage-gitlab
+  artifacts:
+    name: "$CI_JOB_NAME"
+    paths:
+      - reports/
+    reports:
+      junit: reports/junit.xml
+      cobertura: reports/cobertura.xml
+    expire_in: 30 minutes
 
-test:
-  image: docker.leads.su:443/ccm/application-image:latest
+sonarqube-check:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  stage: sonarqube
+  tags:
+    - shared-docker-runner
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  only:
+    - main
+    - merge_requests
+  script:
+    - sonar-scanner
+  allow_failure: true
+  dependencies:
+    - phpunit
+
+test_8.0:
+  image: docker.leads.su:443/ccm/application-image:8.0
+  extends: .before_script_template
+  stage: test
+  tags:
+    - shared-docker-runner
+  only:
+    - tags
+  script:
+    - composer install
+    - composer test
+
+test_8.1:
+  image: docker.leads.su:443/ccm/application-image:8.1
   extends: .before_script_template
   stage: test
   tags:
@@ -53,3 +98,6 @@ publish:
     - tags
   script:
     - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data tag=$CI_COMMIT_TAG "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
+  needs:
+    - test_8.0
+    - test_8.1
