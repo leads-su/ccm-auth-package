@@ -1,7 +1,7 @@
 {
   "name": "ccm/auth",
   "description": "Auth package for CCM backend",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "license": "proprietary",
   "keywords": [
     "ccm",
