@@ -44,11 +44,11 @@ class ExceptionHandler extends Handler
      */
     public function register()
     {
-        $this->reportable(function () {
+        $this->reportable(function (Throwable $e) {
             //
         });
 
-        $this->renderable(function (Throwable|AuthenticationException|UnauthorizedException $throwable) {
+        $this->renderable(function (Throwable|AuthenticationException|UnauthorizedException $throwable, Request $request) {
             if (
                 (
                     $throwable instanceof RouteNotFoundException &&
