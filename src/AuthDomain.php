@@ -1,12 +1,14 @@
-<?php namespace ConsulConfigManager\Auth;
+<?php
+
+namespace ConsulConfigManager\Auth;
 
 /**
  * Class AuthDomain
  *
  * @package ConsulConfigManager\Auth
  */
-class AuthDomain {
-
+class AuthDomain
+{
     /**
      * Indicates if package will register its routes
      * @var bool
@@ -17,7 +19,8 @@ class AuthDomain {
      * Determine if package should register its routes
      * @return bool
      */
-    public static function shouldRegisterRoutes(): bool {
+    public static function shouldRegisterRoutes(): bool
+    {
         return static::$registersRoutes;
     }
 
@@ -25,18 +28,19 @@ class AuthDomain {
      * Configure package to not register its routes
      * @return static
      */
-    public static function ignoreRoutes(): static {
+    public static function ignoreRoutes(): static
+    {
         static::$registersRoutes = false;
-        return new static;
+        return new static();
     }
 
     /**
      * Configure package to register its routes
      * @return static
      */
-    public static function registerRoutes(): static {
+    public static function registerRoutes(): static
+    {
         static::$registersRoutes = true;
-        return new static;
+        return new static();
     }
-
 }

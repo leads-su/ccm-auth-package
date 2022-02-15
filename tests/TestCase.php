@@ -1,10 +1,11 @@
-<?php namespace ConsulConfigManager\Auth\Test;
+<?php
+
+namespace ConsulConfigManager\Auth\Test;
 
 use Laravel\Sanctum\Sanctum;
+use Illuminate\Foundation\Application;
 use ConsulConfigManager\Auth\AuthDomain;
-use Orchestra\Testbench\TestCase as Orchestra;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use ConsulConfigManager\Users\Factories\UserModelFactory;
+use ConsulConfigManager\Users\Factories\UserFactory;
 use ConsulConfigManager\Auth\Providers\AuthServiceProvider;
 use ConsulConfigManager\Users\Providers\UsersServiceProvider;
 
@@ -13,58 +14,48 @@ use ConsulConfigManager\Users\Providers\UsersServiceProvider;
  *
  * @package ConsulConfigManager\Users\Test
  */
-abstract class TestCase extends Orchestra {
-    use DatabaseMigrations;
+abstract class TestCase extends \ConsulConfigManager\Testing\TestCase
+{
+    /**
+     * @inheritDoc
+     */
+    protected array $packageProviders = [
+        UsersServiceProvider::class,
+        AuthServiceProvider::class,
+    ];
 
     /**
      * @inheritDoc
      */
-    public function setUp(): void {
+    protected bool $configurationFromEnvironment = true;
+
+    /**
+     * @inheritDoc
+     */
+    protected string $configurationFromFile = __DIR__ . '/..';
+
+    /**
+     * @inheritDoc
+     */
+    public function runBeforeSetUp(): void
+    {
         AuthDomain::registerRoutes();
-        parent::setUp();
     }
 
-    public function tearDown(): void {
+    /**
+     * @inheritDoc
+     */
+    public function runBeforeTearDown(): void
+    {
         AuthDomain::ignoreRoutes();
-        parent::tearDown();
     }
 
     /**
      * @inheritDoc
      */
-    protected function getPackageProviders($app): array {
-        return [
-            UsersServiceProvider::class,
-            AuthServiceProvider::class,
-        ];
-    }
-
-    /**
-     * Use Laravel Sanctum to provide authenticated access to routes
-     * @param array $data
-     *
-     * @return $this
-     */
-    protected function useSanctum(array $data): self {
-        Sanctum::actingAs(UserModelFactory::new()->make($data));
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function ignorePackageDiscoveriesFrom(): array {
-        return [];
-    }
-
-
-    /**
-     * @inheritDoc
-     */
-    protected function getEnvironmentSetUp($app): void {
-        $app['config']->set('app.env', 'testing');
-        $app['config']->set('app.debug', true);
-        $app['config']->set('permission', [
+    public function setUpEnvironment(Application $app): void
+    {
+        $this->setConfigurationValue('permission', [
             'models' => [
                 'permission' => \Spatie\Permission\Models\Permission::class,
                 'role' => \Spatie\Permission\Models\Role::class,
@@ -91,16 +82,18 @@ abstract class TestCase extends Orchestra {
                 'key' => 'spatie.permission.cache',
                 'store' => 'default',
             ],
-        ]);
-        $app['config']->set('auth.default', 'api');
-        $app['config']->set('cache.default', 'array');
-        $app['config']->set('hashing.bcrypt.round', 4);
-        $app['config']->set('database.default', 'sqlite');
-        $app['config']->set('database.connections.sqlite', [
-            'driver'        =>  'sqlite',
-            'database'      =>  ':memory:',
-            'prefix'        =>  '',
-        ]);
+        ], $app);
     }
 
+    /**
+     * Use Laravel Sanctum to provide authenticated access to routes
+     * @param array $data
+     *
+     * @return $this
+     */
+    protected function useSanctum(array $data): self
+    {
+        Sanctum::actingAs(UserFactory::new()->make($data));
+        return $this;
+    }
 }

@@ -1,33 +1,36 @@
-<?php namespace ConsulConfigManager\Auth\Providers;
+<?php
+
+namespace ConsulConfigManager\Auth\Providers;
 
 use Illuminate\Support\Facades\Route;
 use ConsulConfigManager\Auth\AuthDomain;
 use Laravel\Sanctum\SanctumServiceProvider;
 use ConsulConfigManager\Domain\DomainServiceProvider;
+use ConsulConfigManager\Auth\UseCases\User\UserInputPort;
+use ConsulConfigManager\Auth\UseCases\User\UserInteractor;
 use ConsulConfigManager\Auth\Http\Controllers\UserController;
+use ConsulConfigManager\Auth\UseCases\Logout\LogoutInputPort;
+use ConsulConfigManager\Auth\UseCases\Logout\LogoutInteractor;
 use ConsulConfigManager\Auth\Http\Controllers\LogoutController;
-use ConsulConfigManager\Auth\Domain\UseCases\User\UserInputPort;
-use ConsulConfigManager\Auth\Domain\UseCases\User\UserInteractor;
-use ConsulConfigManager\Auth\Domain\UseCases\Logout\LogoutInputPort;
+use ConsulConfigManager\Auth\Presenters\User\UserHttpPresenter;
+use ConsulConfigManager\Auth\Presenters\Logout\LogoutHttpPresenter;
 use ConsulConfigManager\Auth\Http\Controllers\AuthenticateController;
-use ConsulConfigManager\Auth\Domain\UseCases\Logout\LogoutInteractor;
-use ConsulConfigManager\Auth\Domain\Presenters\User\UserHttpPresenter;
-use ConsulConfigManager\Auth\Domain\Presenters\Logout\LogoutHttpPresenter;
-use ConsulConfigManager\Auth\Domain\UseCases\Authenticate\AuthenticateInputPort;
-use ConsulConfigManager\Auth\Domain\UseCases\Authenticate\AuthenticateInteractor;
-use ConsulConfigManager\Auth\Domain\Presenters\Authenticate\AuthenticateHttpPresenter;
+use ConsulConfigManager\Auth\UseCases\Authenticate\AuthenticateInputPort;
+use ConsulConfigManager\Auth\UseCases\Authenticate\AuthenticateInteractor;
+use ConsulConfigManager\Auth\Presenters\Authenticate\AuthenticateHttpPresenter;
 
 /**
  * Class AuthServiceProvider
  *
  * @package ConsulConfigManager\Auth\Providers
  */
-class AuthServiceProvider extends DomainServiceProvider {
-
+class AuthServiceProvider extends DomainServiceProvider
+{
     /**
      * @inheritDoc
      */
-    public function boot(): void {
+    public function boot(): void
+    {
         $this->registerRoutes();
         $this->offerPublishing();
     }
@@ -35,7 +38,8 @@ class AuthServiceProvider extends DomainServiceProvider {
     /**
      * @inheritDoc
      */
-    public function register(): void {
+    public function register(): void
+    {
         $this->app->register(SanctumServiceProvider::class);
         $this->registerConfiguration();
         parent::register();
@@ -45,12 +49,13 @@ class AuthServiceProvider extends DomainServiceProvider {
      * Register package routes
      * @return void
      */
-    protected function registerRoutes(): void {
+    protected function registerRoutes(): void
+    {
         if (AuthDomain::shouldRegisterRoutes()) {
             Route::group([
                 'prefix'        =>  config('domain.auth.prefix'),
                 'middleware'    =>  config('domain.auth.middleware'),
-            ], function(): void {
+            ], function (): void {
                 $this->loadRoutesFrom(__DIR__ . '/../../routes/routes.php');
             });
         }
@@ -60,7 +65,8 @@ class AuthServiceProvider extends DomainServiceProvider {
      * Register package configuration
      * @return void
      */
-    protected function registerConfiguration(): void {
+    protected function registerConfiguration(): void
+    {
         $this->mergeConfigFrom(__DIR__ . '/../../config/auth.php', 'domain.auth');
     }
 
@@ -68,10 +74,11 @@ class AuthServiceProvider extends DomainServiceProvider {
      * Offer resources for publishing
      * @return void
      */
-    protected function offerPublishing(): void {
+    protected function offerPublishing(): void
+    {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../../config/auth.php'     =>  config_path('domain/auth.php')
+                __DIR__ . '/../../config/auth.php'     =>  config_path('domain/auth.php'),
             ], 'ccm-auth-config');
         }
     }
@@ -79,7 +86,8 @@ class AuthServiceProvider extends DomainServiceProvider {
     /**
      * @inheritDoc
      */
-    protected function registerInterceptors(): void {
+    protected function registerInterceptors(): void
+    {
         $this->registerInterceptorFromParameters(
             AuthenticateInputPort::class,
             AuthenticateInteractor::class,
@@ -101,5 +109,4 @@ class AuthServiceProvider extends DomainServiceProvider {
             LogoutHttpPresenter::class,
         );
     }
-
 }

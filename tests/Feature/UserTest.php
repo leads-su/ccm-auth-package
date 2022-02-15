@@ -1,33 +1,38 @@
-<?php namespace ConsulConfigManager\Auth\Test\Feature;
+<?php
 
-use ConsulConfigManager\Auth\Test\TestCase;
-use ConsulConfigManager\Auth\Test\ProvidesUsersRepository;
+namespace ConsulConfigManager\Auth\Test\Feature;
 
-/**
- * Class UserTest
- * @package ConsulConfigManager\Auth\Test\Feature
- */
-class UserTest extends TestCase {
-    use ProvidesUsersRepository;
+ use Laravel\Sanctum\Sanctum;
 
-    /**
-     * @param array $data
-     * @dataProvider userDataProvider
-     */
-    public function testShouldPassIfAuthenticatedUserCanRetrievePersonalInformation(array $data): void {
-        unset($data['password']);
-        $user = $this->createUserEntityFromArray($data);
-        $response = $this->actingAs($user)->get('/auth/user');
-        $this->assertEquals(200, $response->status());
+ /**
+  * Class UserTest
+  * @package ConsulConfigManager\Auth\Test\Feature
+  */
+ class UserTest extends AbstractFeatureTest
+ {
+     /**
+      * @return void
+      */
+     public function testShouldPassIfUnauthorizedReturnedWhenTriedToAccessRouteWithoutAuthorization(): void
+     {
+         $response = $this->get('/auth/user');
+         $response->assertStatus(401);
+     }
 
-        $decoded = $response->json();
-        $this->assertArrayHasKey('scopes', $decoded['data']);
-        $this->assertArrayHasKey('role', $decoded['data']);
-    }
+     /**
+      * @param array $data
+      * @return void
+      * @dataProvider dataProvider
+      */
+     public function testShouldPassIfAuthenticatedUserCanRetrievePersonalInformation(array $data): void
+     {
+         $user = $this->createDatabaseUser($data);
+         $response = $this->post('/auth/authenticate', $this->createRequestArray($data, 'email'));
+         $this->assertSuccessfulAuthenticationResponse($response);
 
-    public function testShouldPassIfNotAuthenticatedUserCannotRetrievePersonalInformation(): void {
-        $response = $this->get('/auth/user');
-        $this->assertEquals(401, $response->status());
-    }
+         Sanctum::actingAs($user);
 
-}
+         $response = $this->get('/auth/user');
+         $this->assertSuccessfulUserResponse($response, $data);
+     }
+ }

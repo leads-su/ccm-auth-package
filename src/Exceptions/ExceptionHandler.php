@@ -1,4 +1,6 @@
-<?php namespace ConsulConfigManager\Auth\Exceptions;
+<?php
+
+namespace ConsulConfigManager\Auth\Exceptions;
 
 use Throwable;
 use Illuminate\Http\Request;
@@ -13,8 +15,8 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
  * Class ExceptionHandler
  * @package ConsulConfigManager\Auth\Exceptions
  */
-class ExceptionHandler extends Handler {
-
+class ExceptionHandler extends Handler
+{
     /**
      * A list of the exception types that are not reported.
      *
@@ -46,36 +48,32 @@ class ExceptionHandler extends Handler {
             //
         });
 
-        $this->renderable(function (Throwable $throwable, Request $request) {
+        $this->renderable(function (Throwable|AuthenticationException|UnauthorizedException $throwable, Request $request) {
             if (
-                $throwable instanceof RouteNotFoundException &&
-                $throwable->getMessage() === 'Route [login] not defined.'
+                (
+                    $throwable instanceof RouteNotFoundException &&
+                    $throwable->getMessage() === 'Route [login] not defined.'
+                ) ||
+                // @codeCoverageIgnoreStart
+                $throwable instanceof AuthenticationException ||
+                $throwable instanceof UnauthorizedException
+                // @codeCoverageIgnoreEnd
             ) {
                 return $this->renderNotAuthorizedException($throwable);
             }
-        });
-
-        $this->renderable(function (AuthenticationException $exception, Request $request) {
-            return $this->renderNotAuthorizedException($exception);
-        });
-
-        $this->renderable(function (UnauthorizedException $exception, Request $request) {
-            return response_error([
-                'code'      =>  $exception->getStatusCode(),
-                'message'   =>  $exception->getMessage()
-            ], $exception->getMessage(), Response::HTTP_UNAUTHORIZED);
         });
     }
 
     /**
      * Render "Not Authorized" exception
-     * @param Throwable $exception
+     * @param Throwable $throwable
      * @return JsonResponse
      */
-    private function renderNotAuthorizedException(Throwable $exception): JsonResponse {
+    private function renderNotAuthorizedException(Throwable $throwable): JsonResponse
+    {
         return response_error([
-            'code'      =>  $exception->getCode(),
-            'message'   =>  $exception->getMessage()
+            'code'      =>  $throwable->getCode(),
+            'message'   =>  $throwable->getMessage(),
         ], 'You are not authorized to access this route', Response::HTTP_UNAUTHORIZED);
     }
 }

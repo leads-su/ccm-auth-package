@@ -1,4 +1,6 @@
-<?php namespace ConsulConfigManager\Auth\Exceptions;
+<?php
+
+namespace ConsulConfigManager\Auth\Exceptions;
 
 use Exception;
 
@@ -7,4 +9,6 @@ use Exception;
  *
  * @package ConsulConfigManager\Auth\Exceptions
  */
-class InvalidCredentialsException extends Exception { }
+class InvalidCredentialsException extends Exception
+{
+}

@@ -1,19 +1,21 @@
-<?php namespace ConsulConfigManager\Auth\Http\Controllers;
+<?php
+
+namespace ConsulConfigManager\Auth\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use ConsulConfigManager\Auth\Http\Requests\AuthRequest;
 use ConsulConfigManager\Domain\ViewModels\HttpResponseViewModel;
-use ConsulConfigManager\Auth\Domain\UseCases\Authenticate\AuthenticateInputPort;
-use ConsulConfigManager\Auth\Domain\UseCases\Authenticate\AuthenticateRequestModel;
+use ConsulConfigManager\Auth\UseCases\Authenticate\AuthenticateInputPort;
+use ConsulConfigManager\Auth\UseCases\Authenticate\AuthenticateRequestModel;
 
 /**
  * Class AuthenticateController
  *
  * @package ConsulConfigManager\Auth\Http\Controllers
  */
-class AuthenticateController extends Controller {
-
+class AuthenticateController extends Controller
+{
     /**
      * Authenticate input port interactor instance
      * @var AuthenticateInputPort
@@ -25,7 +27,8 @@ class AuthenticateController extends Controller {
      *
      * @param AuthenticateInputPort $interactor
      */
-    public function __construct(AuthenticateInputPort $interactor) {
+    public function __construct(AuthenticateInputPort $interactor)
+    {
         $this->interactor = $interactor;
     }
 
@@ -37,7 +40,8 @@ class AuthenticateController extends Controller {
      *
      * @return Response|null
      */
-    public function __invoke(AuthRequest $request): ?Response {
+    public function __invoke(AuthRequest $request): ?Response
+    {
         $viewModel = $this->interactor->authenticate(
             new AuthenticateRequestModel($request)
         );
@@ -50,5 +54,4 @@ class AuthenticateController extends Controller {
     }
 
     // @codeCoverageIgnoreEnd
-
 }

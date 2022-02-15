@@ -1,32 +1,35 @@
-<?php namespace ConsulConfigManager\Auth\Services;
+<?php
+
+namespace ConsulConfigManager\Auth\Services;
 
 use Illuminate\Support\Facades\Auth;
 use ConsulConfigManager\Auth\Http\Requests\AuthRequest;
-use ConsulConfigManager\Users\Domain\Interfaces\UserEntity;
-use ConsulConfigManager\Users\Domain\Interfaces\UserRepository;
-use ConsulConfigManager\Users\Domain\ValueObjects\EmailValueObject;
-use ConsulConfigManager\Users\Domain\ValueObjects\UsernameValueObject;
-use ConsulConfigManager\Users\Domain\ValueObjects\PasswordValueObject;
+use ConsulConfigManager\Users\Interfaces\UserInterface;
+use ConsulConfigManager\Users\ValueObjects\EmailValueObject;
+use ConsulConfigManager\Users\ValueObjects\PasswordValueObject;
+use ConsulConfigManager\Users\ValueObjects\UsernameValueObject;
+use ConsulConfigManager\Users\Interfaces\UserRepositoryInterface;
 
 /**
  * Class Authenticator
  *
  * @package ConsulConfigManager\Auth\Services
  */
-class Authenticator {
-
+class Authenticator
+{
     /**
      * User repository instance
-     * @var UserRepository
+     * @var UserRepositoryInterface
      */
-    private UserRepository $repository;
+    private UserRepositoryInterface $repository;
 
     /**
      * Authenticator Constructor.
      *
-     * @param UserRepository $userRepository
+     * @param UserRepositoryInterface $userRepository
      */
-    public function __construct(UserRepository $userRepository) {
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
         $this->repository = $userRepository;
     }
 
@@ -34,9 +37,10 @@ class Authenticator {
      * Attempt to authenticate user with given credentials
      * @param AuthRequest $request
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    public function attempt(AuthRequest $request): ?UserEntity {
+    public function attempt(AuthRequest $request): ?UserInterface
+    {
         $login = trim($request->get('emailOrUsername'));
         $password = trim($request->get('password'));
 
@@ -51,9 +55,10 @@ class Authenticator {
      * @param string $email
      * @param string $password
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    protected function emailAuthentication(string $email, string $password): ?UserEntity {
+    protected function emailAuthentication(string $email, string $password): ?UserInterface
+    {
         $ldapAuthenticated = $this->ldapEmailAuthentication($email, $password);
         if ($ldapAuthenticated) {
             return $ldapAuthenticated;
@@ -66,9 +71,10 @@ class Authenticator {
      * @param string $email
      * @param string $password
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    protected function ldapEmailAuthentication(string $email, string $password): ?UserEntity {
+    protected function ldapEmailAuthentication(string $email, string $password): ?UserInterface
+    {
         return $this->ldapAuthentication($email, $password, 'userPrincipalName');
     }
 
@@ -77,9 +83,10 @@ class Authenticator {
      * @param string $email
      * @param string $password
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    protected function localEmailAuthentication(string $email, string $password): ?UserEntity {
+    protected function localEmailAuthentication(string $email, string $password): ?UserInterface
+    {
         return $this->localAuthentication(new EmailValueObject($email), $password);
     }
 
@@ -88,9 +95,10 @@ class Authenticator {
      * @param string $username
      * @param string $password
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    protected function usernameAuthentication(string $username, string $password): ?UserEntity {
+    protected function usernameAuthentication(string $username, string $password): ?UserInterface
+    {
         $ldapAuthenticated = $this->ldapUsernameAuthentication($username, $password);
         if ($ldapAuthenticated) {
             return $ldapAuthenticated;
@@ -103,9 +111,10 @@ class Authenticator {
      * @param string $username
      * @param string $password
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    protected function ldapUsernameAuthentication(string $username, string $password): ?UserEntity {
+    protected function ldapUsernameAuthentication(string $username, string $password): ?UserInterface
+    {
         return $this->ldapAuthentication($username, $password, 'sAMAccountName');
     }
 
@@ -114,9 +123,10 @@ class Authenticator {
      * @param string $username
      * @param string $password
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    protected function localUsernameAuthentication(string $username, string $password): ?UserEntity {
+    protected function localUsernameAuthentication(string $username, string $password): ?UserInterface
+    {
         return $this->localAuthentication(new UsernameValueObject($username), $password);
     }
 
@@ -126,12 +136,13 @@ class Authenticator {
      * @param string $password
      * @param string $type
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    protected function ldapAuthentication(string $login, string $password, string $type): ?UserEntity {
+    protected function ldapAuthentication(string $login, string $password, string $type): ?UserInterface
+    {
         if (!Auth::attempt([
             $type       =>  $login,
-            'password'  =>  $password
+            'password'  =>  $password,
         ])) {
             return null;
         }
@@ -143,9 +154,10 @@ class Authenticator {
      * @param EmailValueObject|UsernameValueObject $login
      * @param string                               $password
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    protected function localAuthentication(EmailValueObject|UsernameValueObject $login, string $password): ?UserEntity {
+    protected function localAuthentication(EmailValueObject|UsernameValueObject $login, string $password): ?UserInterface
+    {
         if ($login instanceof EmailValueObject) {
             $user = $this->repository->findByEmail($login);
         } else {
@@ -161,5 +173,4 @@ class Authenticator {
         }
         return $user;
     }
-
 }

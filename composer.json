@@ -1,94 +1,126 @@
 {
-  "name": "ccm/auth",
-  "description": "Auth package for CCM backend",
-  "version": "1.0.5",
-  "license": "proprietary",
-  "keywords": [
-    "ccm",
-    "leads",
-    "consul",
-    "users",
-    "extension"
-  ],
-  "homepage": "https://gitlab.leads.local/ccm/ccm-auth-package",
-  "authors": [
-    {
-      "name": "Zhivolupov Ivan",
-      "email": "iz@leads.su",
-      "role": "Developer"
-    }
-  ],
-  "require": {
-    "php": "^8.0",
-    "ext-json": "*",
-    "ext-ldap": "*",
-    "ccm/domain": "^1.0",
-    "ccm/users": "^1.0",
-    "directorytree/ldaprecord-laravel": "^2.4",
-    "doctrine/dbal": "^3.1",
-    "illuminate/database": "^8.0",
-    "laravel/sanctum": "^2.11"
-  },
-  "require-dev": {
-    "mockery/mockery": "^1.4",
-    "orchestra/testbench": "^6.0",
-    "phpunit/phpunit": "^9.0",
-    "sempro/phpunit-pretty-print": "^1.4"
-  },
-  "autoload": {
-    "psr-4": {
-      "ConsulConfigManager\\Auth\\": "src/"
+    "name": "ccm/auth",
+    "description": "Auth package for CCM backend",
+    "version": "1.1.0",
+    "license": "proprietary",
+    "keywords": [
+      "ccm",
+      "leads",
+      "consul",
+      "users",
+      "extension"
+    ],
+    "homepage": "https://gitlab.leads.local/ccm/ccm-auth-package",
+    "authors": [
+        {
+            "name": "Zhivolupov Ivan",
+            "email": "iz@leads.su",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0 <8.2",
+        "ext-json": "*",
+        "ext-ldap": "*",
+        "ccm/domain": "^1.0",
+        "ccm/users": "^1.0"
     },
-    "files": []
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "ConsulConfigManager\\Auth\\Test\\": "tests/"
-    }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "ConsulConfigManager\\Auth\\Providers\\AuthServiceProvider"
-      ]
-    }
-  },
-  "scripts": {
-    "test": [
-      "phpunit --color=always"
-    ],
-    "test:coverage": [
-      "@putenv XDEBUG_MODE=coverage",
-      "phpunit --color=always --coverage-clover=\"output/code-coverage/clover.xml\""
-    ],
-    "test:coverage-text": [
-      "@putenv XDEBUG_MODE=coverage",
-      "phpunit --color=always --coverage-text"
-    ],
-    "test:coverage-gitlab": [
-      "@putenv XDEBUG_MODE=coverage",
-      "phpunit --color=never --coverage-text --coverage-clover=\"reports/clover.xml\" --coverage-cobertura=\"reports/cobertura.xml\""
-    ],
-    "test:coverage-html": [
-      "@putenv XDEBUG_MODE=coverage",
-      "phpunit --color=always --coverage-html=\"output/code-coverage\""
+    "require-dev": {
+        "ccm/testing": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ConsulConfigManager\\Auth\\": "src/"
+        },
+        "files": []
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ConsulConfigManager\\Auth\\Test\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ConsulConfigManager\\Auth\\Providers\\AuthServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "psr": [
+            "vendor/bin/php-cs-fixer fix"
+        ],
+        "test": [
+            "phpunit --color=always"
+        ],
+        "test:feature": [
+            "phpunit --color=always --testsuite \"Feature Test Suite\""
+        ],
+        "test:integration": [
+            "phpunit --color=always --testsuite \"Integration Test Suite\""
+        ],
+        "test:unit": [
+            "phpunit --color=always --testsuite \"Unit Test Suite\""
+        ],
+        "test:playground": [
+            "phpunit --color=always --testsuite \"Playground Test Suite\""
+        ],
+        "test:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=always --coverage-clover=\"output/code-coverage/clover.xml\""
+        ],
+        "test:coverage-text": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=always --coverage-text"
+        ],
+        "test:coverage-gitlab": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=never --coverage-text --coverage-clover=\"reports/clover.xml\" --coverage-cobertura=\"reports/cobertura.xml\""
+        ],
+        "test:coverage-html": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=always --coverage-html=\"output/code-coverage\""
+        ],
+        "test:feature:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=always --testsuite \"Feature Test Suite\" --coverage-html=\"output/code-coverage\""
+        ],
+        "test:integration:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=always --testsuite \"Integration Test Suite\" --coverage-html=\"output/code-coverage\""
+        ],
+        "test:unit:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=always --testsuite \"Unit Test Suite\" --coverage-html=\"output/code-coverage\""
+        ],
+        "test:playground:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=always --testsuite \"Playground Test Suite\" --coverage-html=\"output/code-coverage\""
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "secure-http": false,
+        "gitlab-domains": [
+            "gitlab.leads.local"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "git",
+            "url": "git@gitlab.leads.local:ccm/ccm-testing-package.git"
+        },
+        {
+            "type": "git",
+            "url": "git@gitlab.leads.local:ccm/ccm-domain-package.git"
+        },
+        {
+            "type": "git",
+            "url": "git@gitlab.leads.local:ccm/ccm-users-package.git"
+        }
     ]
-  },
-  "config": {
-    "optimize-autoloader": true,
-    "preferred-install": "dist",
-    "sort-packages": true,
-    "secure-http": false,
-    "gitlab-domains": [
-      "gitlab.leads.local"
-    ]
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "repositories": {
-    "gitlab.leads.local/123": {
-      "type": "composer",
-      "url": "http://gitlab.leads.local/api/v4/group/123/-/packages/composer/packages.json"
-    }
-  }
 }

@@ -1,40 +1,57 @@
-<?php namespace ConsulConfigManager\Auth\Test\Unit\Http\Requests;
+<?php
+
+namespace ConsulConfigManager\Auth\Test\Unit\Http\Requests;
 
 use Illuminate\Support\Facades\Validator;
 use ConsulConfigManager\Auth\Test\TestCase;
 use ConsulConfigManager\Auth\Http\Requests\AuthRequest;
+use Illuminate\Contracts\Validation\Validator as ValidatorInterface;
 
 /**
  * Class AuthRequestTest
- *
  * @package ConsulConfigManager\Auth\Test\Unit\Http\Requests
  */
-class AuthRequestTest extends TestCase {
-
-    public function testShouldReturnBooleanFromAuthorizeMethod(): void {
+class AuthRequestTest extends TestCase
+{
+    /**
+     * @return void
+     */
+    public function testShouldPassIfTrueReturnedFromAuthorizeMethod(): void
+    {
         $request = new AuthRequest();
         $this->assertIsBool($request->authorize());
+        $this->assertTrue($request->authorize());
     }
 
-    public function testShouldPassIfValidDataWithEmail(): void {
+    /**
+     * @return void
+     */
+    public function testShouldPassIfRequestPerformedWithValidEmailAddress(): void
+    {
         $validator = $this->createValidatorInstance([
-            'emailOrUsername'   =>  'email@internet.org',
+            'emailOrUsername'   =>  'john.doe@example.com',
             'password'          =>  'InsecurePassword',
         ]);
-
         $this->assertTrue($validator->passes());
     }
 
-    public function testShouldPassIfValidDataWithUsername(): void {
+    /**
+     * @return void
+     */
+    public function testShouldPassIfRequestPerformedWithValidUsername(): void
+    {
         $validator = $this->createValidatorInstance([
-            'emailOrUsername'   =>  'username',
+            'emailOrUsername'   =>  'john.doe',
             'password'          =>  'InsecurePassword',
         ]);
-
         $this->assertTrue($validator->passes());
     }
 
-    public function testShouldFailIfMissingUsernameOrEmailProperty(): void {
+    /**
+     * @return void
+     */
+    public function testShouldPassIfValidatorFailsWithMissingUsernameAndEmail(): void
+    {
         $validator = $this->createValidatorInstance([
             'password'          =>  'InsecurePassword',
         ]);
@@ -42,15 +59,23 @@ class AuthRequestTest extends TestCase {
         $this->assertFalse($validator->passes());
     }
 
-    public function testShouldFailIfMissingPasswordProperty(): void {
+    /**
+     * @return void
+     */
+    public function testShouldPassIfValidatorFailsWithMissingPassword(): void
+    {
         $validator = $this->createValidatorInstance([
-            'emailOrUsername'   =>  'username',
+            'emailOrUsername'   =>  'john.doe',
         ]);
 
         $this->assertFalse($validator->passes());
     }
 
-    public function testShouldFailIfPasswordIsLessThan8Symbols(): void {
+    /**
+     * @return void
+     */
+    public function testShouldPassIfValidatorFailsWithInsecurePassword(): void
+    {
         $validator = $this->createValidatorInstance([
             'emailOrUsername'   =>  'username',
             'password'          =>  'pwd',
@@ -59,7 +84,11 @@ class AuthRequestTest extends TestCase {
         $this->assertFalse($validator->passes());
     }
 
-    public function testShouldFailIfPasswordIsLongerThan16Symbols(): void {
+    /**
+     * @return void
+     */
+    public function testShouldPassIfValidatorFailsWithLongPassword(): void
+    {
         $validator = $this->createValidatorInstance([
             'emailOrUsername'   =>  'username',
             'password'          =>  'InsecurePassword1',
@@ -69,14 +98,13 @@ class AuthRequestTest extends TestCase {
     }
 
     /**
-     * Create new validator instance based of provided data
+     * Create new validator instance based on provided data
      * @param array $data
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
+     * @return ValidatorInterface
      */
-    private function createValidatorInstance(array $data): \Illuminate\Contracts\Validation\Validator {
+    private function createValidatorInstance(array $data): ValidatorInterface
+    {
         $request = new AuthRequest();
         return Validator::make($data, $request->rules());
     }
-
 }

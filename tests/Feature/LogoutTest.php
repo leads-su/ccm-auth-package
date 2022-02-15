@@ -1,40 +1,38 @@
-<?php namespace ConsulConfigManager\Auth\Test\Feature;
+<?php
 
-use Illuminate\Support\Arr;
+namespace ConsulConfigManager\Auth\Test\Feature;
+
 use Laravel\Sanctum\Sanctum;
-use ConsulConfigManager\Auth\Test\TestCase;
-use ConsulConfigManager\Auth\Test\ProvidesUsersRepository;
 
 /**
  * Class LogoutTest
  * @package ConsulConfigManager\Auth\Test\Feature
  */
-class LogoutTest extends TestCase {
-    use ProvidesUsersRepository;
-
-    public function testShouldPassIfUnauthorizedUserCannotUseThisRoute(): void {
+class LogoutTest extends AbstractFeatureTest
+{
+    /**
+     * @return void
+     */
+    public function testShouldPassIfUnauthorizedReturnedWhenTriedToAccessRouteWithoutAuthorization(): void
+    {
         $response = $this->post('/auth/logout');
         $response->assertStatus(401);
     }
 
     /**
      * @param array $data
-     * @dataProvider userDataProvider
+     * @dataProvider dataProvider
      */
-    public function testShouldPassIfAuthorizedUserCanUseThisRoute(array $data): void {
-        // We need to create user first
-        $user = $this->createUserEntityFromArray($data);
-        $user->save();
-        $response = $this->post('/auth/authenticate', [
-            'emailOrUsername'       =>  Arr::get($data, 'email'),
-            'password'              =>  Arr::get($data, 'password')
-        ]);
-        $response->assertStatus(200);
+    public function testShouldPassIfAuthorizedUserCanUseThisRoute(array $data): void
+    {
+        $user = $this->createDatabaseUser($data);
+        $response = $this->post('/auth/authenticate', $this->createRequestArray($data, 'email'));
+        $this->assertSuccessfulAuthenticationResponse($response);
 
         Sanctum::actingAs($user);
 
-        // Now we can log user out
         $response = $this->post('/auth/logout');
         $response->assertStatus(200);
+        $this->assertSuccessfulLogoutResponse($response);
     }
 }

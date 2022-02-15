@@ -1,127 +1,90 @@
-<?php namespace ConsulConfigManager\Auth\Test\Feature;
+<?php
+
+namespace ConsulConfigManager\Auth\Test\Feature;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Sanctum\PersonalAccessToken;
-use ConsulConfigManager\Auth\Test\TestCase;
-use ConsulConfigManager\Auth\Test\ProvidesUsersRepository;
-use ConsulConfigManager\Users\Domain\Interfaces\UserEntity;
 
 /**
  * Class AuthenticationTest
- *
  * @package ConsulConfigManager\Auth\Test\Feature
  */
-class AuthenticationTest extends TestCase {
-    use ProvidesUsersRepository;
-
+class AuthenticationTest extends AbstractFeatureTest
+{
     /**
      * @param array $data
-     * @dataProvider userDataProvider
+     * @return void
+     * @dataProvider dataProvider
      */
-    public function testShouldPassIfUserCanBeAuthenticatedThroughDatabase(array $data): void {
-        $this->createUserEntityFromArray($data)->save();
-        $response = $this->post('/auth/authenticate', [
-            'emailOrUsername'       =>  Arr::get($data, 'email'),
-            'password'              =>  Arr::get($data, 'password')
-        ]);
+    public function testShouldPassIfUserCanBeAuthenticatedUsingEmail(array $data): void
+    {
+        $this->createDatabaseUser($data);
+        $response = $this->post('/auth/authenticate', $this->createRequestArray($data, 'email'));
         $response->assertStatus(200);
-        $decoded = $response->json();
-        $this->assertArrayHasKey('data', $decoded);
-        $this->assertArrayHasKey('user', $decoded['data']);
-        $this->assertArrayHasKey('token', $decoded['data']);
-        $this->assertArrayHasKey('token', $decoded['data']['token']);
+        $this->assertSuccessfulAuthenticationResponse($response);
     }
 
     /**
      * @param array $data
-     * @dataProvider userDataProvider
+     * @return void
+     * @dataProvider dataProvider
      */
-    public function testShouldFailIfUserCannotBeAuthenticatedThroughDatabase(array $data): void {
-        $response = $this->post('/auth/authenticate', [
-            'emailOrUsername'       =>  Arr::get($data, 'email'),
-            'password'              =>  Arr::get($data, 'password')
-        ]);
-        $response->assertStatus(401);
-    }
-
-    /**
-     * @param array $data
-     * @dataProvider userDataProvider
-     */
-    public function testShouldFailIfUserCannotBeAuthenticatedThroughDatabaseWithInvalidPassword(array $data): void {
-        $this->createUserEntityFromArray($data)->save();
-        $response = $this->post('/auth/authenticate', [
-            'emailOrUsername'       =>  Arr::get($data, 'email'),
-            'password'              =>  'invalidpassword'
-        ]);
-        $response->assertStatus(401);
-    }
-
-    /**
-     * @param array $data
-     * @dataProvider ldapUserDataProvider
-     */
-    public function testShouldPassIfUserCanBeAuthenticatedThroughLdap(array $data): void {
-        $this->mockLdapServer($data);
-        $response = $this->post('/auth/authenticate', [
-            'emailOrUsername'       =>  Arr::get($data, 'email'),
-            'password'              =>  Arr::get($data, 'password')
-        ]);
+    public function testShouldPassIfUserCanBeAuthenticatedUsingUsername(array $data): void
+    {
+        $this->createDatabaseUser($data);
+        $response = $this->post('/auth/authenticate', $this->createRequestArray($data, 'username'));
         $response->assertStatus(200);
+        $this->assertSuccessfulAuthenticationResponse($response);
     }
+
     /**
      * @param array $data
-     * @dataProvider ldapUserDataProvider
+     * @return void
+     * @dataProvider dataProvider
      */
-    public function testShouldFailIfUserCannotBeAuthenticatedThroughLdap(array $data): void {
-        $this->mockLdapServer($data, false);
-        $response = $this->post('/auth/authenticate', [
-            'emailOrUsername'       =>  Arr::get($data, 'email'),
-            'password'              =>  Arr::get($data, 'password')
-        ]);
-        $response->assertStatus(401);
+    public function testShouldPassIfUserCannotBeAuthenticatedWithInvalidEmail(array $data): void
+    {
+        $this->createDatabaseUser($data);
+        Arr::set($data, 'email', 'jane.doe@example.com');
+        $response = $this->post('/auth/authenticate', $this->createRequestArray($data, 'email'));
+        $this->assertFailedAuthenticationResponse($response);
     }
 
     /**
-     * Mock LDAP server
-     *
-     * @param array  $data
-     * @param bool   $pass
+     * @param array $data
+     * @return void
+     * @dataProvider dataProvider
      */
-    private function mockLdapServer(array $data, bool $pass = true): void {
-        Auth::shouldReceive('attempt')
-            ->once()
-            ->withArgs(function (array $credentials = [], bool $remember = false): bool {
-                return true;
-            })
-            ->andReturnUsing(function () use ($pass): bool {
-                return $pass;
-            });
-
-        Auth::shouldReceive('userResolver')
-            ->andReturnUsing(function() use ($data, $pass) {
-                return function() use ($data, $pass) {
-                    return $pass ? $this->createUserEntityFromArray($data) : null;
-                };
-            });
-
-        Auth::shouldReceive('user')
-            ->andReturnUsing(function () use ($data, $pass): ?UserEntity {
-                return $pass ? $this->createUserEntityFromArray($data) : null;
-            });
+    public function testShouldPassIfUserCannotBeAuthenticatedWithInvalidUsername(array $data): void
+    {
+        $this->createDatabaseUser($data);
+        Arr::set($data, 'username', 'jane.doe');
+        $response = $this->post('/auth/authenticate', $this->createRequestArray($data, 'username'));
+        $this->assertFailedAuthenticationResponse($response);
     }
 
     /**
-     * LDAP user data provider
-     * @return array
+     * @param array $data
+     * @return void
+     * @dataProvider dataProvider
      */
-    public function ldapUserDataProvider(): array {
-        $user = $this->userDataProvider();
-        Arr::set($user, 'John Doe.data.username', 'doe.john');
-        Arr::set($user, 'John Doe.data.email', 'doe.john@example.com');
-        Arr::set($user, 'John Doe.data.password', 'ldap_password');
-        return $user;
+    public function testShouldPassIfUserCannotBeAuthenticatedWithValidEmailAndInvalidPassword(array $data): void
+    {
+        $this->createDatabaseUser($data);
+        Arr::set($data, 'password', 'invalidPassword');
+        $response = $this->post('/auth/authenticate', $this->createRequestArray($data, 'email'));
+        $this->assertFailedAuthenticationResponse($response);
     }
 
+    /**
+     * @param array $data
+     * @return void
+     * @dataProvider dataProvider
+     */
+    public function testShouldPassIfUserCannotBeAuthenticatedWithValidUsernameAndInvalidPassword(array $data): void
+    {
+        $this->createDatabaseUser($data);
+        Arr::set($data, 'password', 'invalidPassword');
+        $response = $this->post('/auth/authenticate', $this->createRequestArray($data, 'username'));
+        $this->assertFailedAuthenticationResponse($response);
+    }
 }

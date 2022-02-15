@@ -1,8 +1,10 @@
-<?php namespace ConsulConfigManager\Auth\Events;
+<?php
+
+namespace ConsulConfigManager\Auth\Events;
 
 use LdapRecord\Models\Events\Created;
 use ConsulConfigManager\Users\Models\User;
-use ConsulConfigManager\Users\Domain\Interfaces\UserEntity;
+use ConsulConfigManager\Users\Interfaces\UserInterface;
 
 /**
  * Class OnActiveDirectoryModelCreatedEvent
@@ -10,8 +12,8 @@ use ConsulConfigManager\Users\Domain\Interfaces\UserEntity;
  * @package ConsulConfigManager\Auth\Events
  * @codeCoverageIgnoreStart
  */
-abstract class OnActiveDirectoryModelCreatedEvent {
-
+abstract class OnActiveDirectoryModelCreatedEvent
+{
     /**
      * E-Mail attribute name
      * @var string
@@ -22,18 +24,18 @@ abstract class OnActiveDirectoryModelCreatedEvent {
      * Handle event
      * @param Created $event
      */
-    public abstract function handle(Created $event): void;
+    abstract public function handle(Created $event): void;
 
     /**
      * Get local user from event
      * @param Created $event
      *
-     * @return UserEntity|null
+     * @return UserInterface|null
      */
-    public function getUserFromEvent(Created $event): ?UserEntity {
+    public function getUserFromEvent(Created $event): ?UserInterface
+    {
         $email = $event->getModel()->getAttribute($this->emailAttribute);
         return User::where('email', '=', $email)->first();
     }
-
 }
 // @codeCoverageIgnoreEnd

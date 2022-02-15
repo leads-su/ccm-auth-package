@@ -1,21 +1,23 @@
-<?php namespace ConsulConfigManager\Auth\Http\Controllers;
+<?php
+
+namespace ConsulConfigManager\Auth\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
 use ConsulConfigManager\Auth\Exceptions\ExceptionHandler;
+use ConsulConfigManager\Auth\UseCases\User\UserInputPort;
+use ConsulConfigManager\Auth\UseCases\User\UserRequestModel;
 use ConsulConfigManager\Domain\ViewModels\HttpResponseViewModel;
-use ConsulConfigManager\Auth\Domain\UseCases\User\UserInputPort;
-use ConsulConfigManager\Auth\Domain\UseCases\User\UserRequestModel;
 use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
 
 /**
  * Class UserController
  * @package ConsulConfigManager\Auth\Http\Controllers
  */
-class UserController extends Controller {
-
+class UserController extends Controller
+{
     /**
      * User input port interactor instance
      * @var UserInputPort
@@ -27,7 +29,8 @@ class UserController extends Controller {
      *
      * @param UserInputPort $interactor
      */
-    public function __construct(UserInputPort $interactor) {
+    public function __construct(UserInputPort $interactor)
+    {
         $this->interactor = $interactor;
         App::singleton(
             ExceptionHandlerContract::class,
@@ -43,7 +46,8 @@ class UserController extends Controller {
      *
      * @return Response|null
      */
-    public function __invoke(Request $request): ?Response {
+    public function __invoke(Request $request): ?Response
+    {
         $viewModel = $this->interactor->user(
             new UserRequestModel($request)
         );
@@ -56,5 +60,4 @@ class UserController extends Controller {
     }
 
     // @codeCoverageIgnoreEnd
-
 }
