@@ -20,7 +20,7 @@ class AuthenticateResponseModelTest extends AbstractUseCaseTest
      */
     public function testShouldPassIfUserEntityIsReturned(array $data): void
     {
-        $instance = new AuthenticateResponseModel(UserFactory::new()->make($data));
+        $instance = new AuthenticateResponseModel('', UserFactory::new()->make($data));
         $this->assertInstanceOf(UserInterface::class, $instance->getUser());
     }
 

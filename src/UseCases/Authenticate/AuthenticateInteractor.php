@@ -49,7 +49,8 @@ class AuthenticateInteractor implements AuthenticateInputPort
             if (!$user) {
                 throw new InvalidCredentialsException();
             }
-            return $this->output->userAuthenticated(new AuthenticateResponseModel($user));
+
+            return $this->output->userAuthenticated(new AuthenticateResponseModel($request->userAgent(), $user));
         } catch (Throwable $exception) {
             if ($exception instanceof InvalidCredentialsException) {
                 return $this->output->invalidCredentials(new AuthenticateResponseModel());
