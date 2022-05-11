@@ -3,6 +3,8 @@
 namespace ConsulConfigManager\Auth\Services;
 
 use WhichBrowser\Parser;
+use Illuminate\Support\Arr;
+use Illuminate\Http\Request;
 
 /**
  * Class TokenNameGenerator
@@ -21,6 +23,12 @@ class TokenNameGenerator
      * @var string
      */
     private string $userAgent;
+
+    /**
+     * Request instance
+     * @var Request
+     */
+    private Request $request;
 
     /**
      * Parser instance
@@ -86,12 +94,16 @@ class TokenNameGenerator
     /**
      * TokenNameGenerator constructor.
      * @param string $userAgent
-     * @return void
+     * @param Request|null $request
      */
-    protected function __construct(string $userAgent)
+    protected function __construct(string $userAgent, ?Request $request = null)
     {
         $this->userAgent = $userAgent;
         $this->parser = new Parser($this->userAgent);
+        if ($request === null) {
+            $request = request();
+        }
+        $this->request = $request;
         $this->process();
     }
 
@@ -130,17 +142,27 @@ class TokenNameGenerator
         if ($browserVersion !== null && strlen($browserVersion) > 0) {
             $this->append('browser_version', $browserVersion);
         }
+
+        if ($this->request->ip() !== null) {
+            $this->append('ip_address', $this->request->ip());
+        } else {
+            $ips = $this->request->ips();
+            $ip = 'unknown';
+            if (count($ips) > 0) {
+                $ip = Arr::first($ips);
+            }
+            $this->append('ip_address', $ip);
+        }
     }
 
     /**
      * Append string to token name parts list
      * @param string $key
      * @param string $string
-     * @return TokenNameGenerator
+     * @return void
      */
-    private function append(string $key, string $string): TokenNameGenerator
+    private function append(string $key, string $string): void
     {
         $this->parts[$key] = $string;
-        return $this;
     }
 }
