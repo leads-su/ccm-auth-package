@@ -5,6 +5,7 @@ namespace ConsulConfigManager\Auth\Presenters\Authenticate;
 use Throwable;
 use Illuminate\Http\Response;
 use ConsulConfigManager\Domain\Interfaces\ViewModel;
+use ConsulConfigManager\Auth\Services\TokenNameGenerator;
 use ConsulConfigManager\Domain\ViewModels\HttpResponseViewModel;
 use ConsulConfigManager\Auth\UseCases\Authenticate\AuthenticateOutputPort;
 use ConsulConfigManager\Auth\UseCases\Authenticate\AuthenticateResponseModel;
@@ -19,9 +20,9 @@ class AuthenticateHttpPresenter implements AuthenticateOutputPort
     /**
      * @inheritDoc
      */
-    public function userAuthenticated(AuthenticateResponseModel $authenticateResponseModel): ViewModel
+    public function userAuthenticated(AuthenticateResponseModel $responseModel): ViewModel
     {
-        $user = $authenticateResponseModel->getUser();
+        $user = $responseModel->getUser();
         return new HttpResponseViewModel(
             response_success(
                 [
@@ -29,7 +30,7 @@ class AuthenticateHttpPresenter implements AuthenticateOutputPort
                     'token'         =>  [
                         'type'      =>  'Bearer',
                         'expires'   =>  now()->diffInSeconds(now()->addMinutes(config('sanctum.expiration'))->subMinutes(50)),
-                        'token'     =>  $user->createToken('auth_token')->plainTextToken,
+                        'token'     =>  $user->createToken(TokenNameGenerator::from($responseModel->getUserAgent())->toJson())->plainTextToken,
                     ],
                 ],
                 'Successfully authenticated user',
@@ -41,7 +42,7 @@ class AuthenticateHttpPresenter implements AuthenticateOutputPort
     /**
      * @inheritDoc
      */
-    public function invalidCredentials(AuthenticateResponseModel $authenticateResponseModel): ViewModel
+    public function invalidCredentials(AuthenticateResponseModel $responseModel): ViewModel
     {
         return new HttpResponseViewModel(
             response_error(
@@ -56,7 +57,7 @@ class AuthenticateHttpPresenter implements AuthenticateOutputPort
     /**
      * @inheritDoc
      */
-    public function unableToAuthenticateUser(AuthenticateResponseModel $authenticateResponseModel, Throwable $exception): ViewModel
+    public function unableToAuthenticateUser(AuthenticateResponseModel $responseModel, Throwable $exception): ViewModel
     {
         if (config('app.debug')) {
             throw $exception;

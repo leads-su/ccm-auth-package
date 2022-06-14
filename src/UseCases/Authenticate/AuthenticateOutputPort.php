@@ -14,26 +14,26 @@ interface AuthenticateOutputPort
 {
     /**
      * Output port for "user authenticated" status
-     * @param AuthenticateResponseModel $authenticateResponseModel
+     * @param AuthenticateResponseModel $responseModel
      *
      * @return ViewModel
      */
-    public function userAuthenticated(AuthenticateResponseModel $authenticateResponseModel): ViewModel;
+    public function userAuthenticated(AuthenticateResponseModel $responseModel): ViewModel;
 
     /**
      * Output port for "invalid credentials" status
-     * @param AuthenticateResponseModel $authenticateResponseModel
+     * @param AuthenticateResponseModel $responseModel
      *
      * @return ViewModel
      */
-    public function invalidCredentials(AuthenticateResponseModel $authenticateResponseModel): ViewModel;
+    public function invalidCredentials(AuthenticateResponseModel $responseModel): ViewModel;
 
     /**
      * Output port for "unable to authenticate user" status
-     * @param AuthenticateResponseModel $authenticateResponseModel
+     * @param AuthenticateResponseModel $responseModel
      * @param Throwable                 $exception
      *
      * @return ViewModel
      */
-    public function unableToAuthenticateUser(AuthenticateResponseModel $authenticateResponseModel, Throwable $exception): ViewModel;
+    public function unableToAuthenticateUser(AuthenticateResponseModel $responseModel, Throwable $exception): ViewModel;
 }

@@ -1,7 +1,7 @@
 {
     "name": "leads-su/ccm-auth",
     "description": "Auth package for CCM backend",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "license": "MIT",
     "keywords": [
       "ccm",
@@ -23,7 +23,8 @@
         "ext-json": "*",
         "ext-ldap": "*",
         "leads-su/ccm-domain": "^1.0",
-        "leads-su/ccm-users": "^1.0"
+        "leads-su/ccm-users": "^1.0",
+        "whichbrowser/parser": "^2.1"
     },
     "require-dev": {
         "leads-su/ccm-testing": "^1.0"
