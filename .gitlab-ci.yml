@@ -39,7 +39,9 @@ phpunit:
       - reports/
     reports:
       junit: reports/junit.xml
-      cobertura: reports/cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: reports/cobertura.xml
     expire_in: 30 minutes
 
 sonarqube-check:
